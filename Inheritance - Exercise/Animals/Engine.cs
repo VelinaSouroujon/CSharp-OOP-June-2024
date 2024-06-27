@@ -23,11 +23,7 @@ namespace Animals
                 {
                     string[] animalArgs = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                    string name = animalArgs[0];
-                    int age = int.Parse(animalArgs[1]);
-                    string gender = animalArgs[2];
-
-                    Animal animal = GetAnimal(type, name, age, gender);
+                    Animal animal = GetAnimal(type, animalArgs);
                     animals.Add(animal);
                 }
                 catch (Exception ex)
@@ -38,11 +34,21 @@ namespace Animals
 
             PrintAnimals();
         }
-        private Animal GetAnimal(string type, string name, int age, string gender)
+        private Animal GetAnimal(string type, string[] args)
         {
             Animal animal;
 
-            switch(type)
+            string name = args[0];
+            int age = int.Parse(args[1]);
+
+            string gender = string.Empty;
+
+            if (args.Length > 2)
+            {
+                gender = args[2];
+            }
+
+            switch (type)
             {
                 case "Dog":
                     animal = new Dog(name, age, gender);
