@@ -17,17 +17,16 @@ namespace PersonsInfo
                 string firstName = personInfo[0];
                 string lastName = personInfo[1];
                 int age = int.Parse(personInfo[2]);
+                decimal salary = decimal.Parse(personInfo[3]);
 
-                people[i] = new Person(firstName, lastName, age);
+                people[i] = new Person(firstName, lastName, age, salary);
             }
 
-            people = people
-                .OrderBy(x => x.FirstName)
-                .ThenBy(x => x.Age)
-                .ToArray();
+            decimal percentage = decimal.Parse(Console.ReadLine());
 
             foreach (Person person in people)
             {
+                person.IncreaseSalary(percentage);
                 Console.WriteLine(person);
             }
         }
