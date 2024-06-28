@@ -30,10 +30,16 @@ namespace PersonsInfo
                 }
             }
 
-            decimal percentage = decimal.Parse(Console.ReadLine());
+            Team team = new Team("SoftUni");
 
-            people.ForEach(x => x.IncreaseSalary(percentage));
-            people.ForEach(Console.WriteLine);
+            foreach (Person person in people)
+            {
+                team.AddPlayer(person);
+            }
+
+            Console.WriteLine($"First team has {team.FirstTeam.Count} players.");
+            Console.WriteLine($"Reserve team has {team.ReserveTeam.Count} players.");
+
         }
     }
 }
