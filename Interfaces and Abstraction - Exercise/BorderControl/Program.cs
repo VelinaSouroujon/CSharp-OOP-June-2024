@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BorderControl
 {
@@ -6,42 +7,54 @@ namespace BorderControl
     {
         static void Main(string[] args)
         {
-            List<SocietyMember> societyMembers = new List<SocietyMember>();
+            List<IBirthable> list = new List<IBirthable>();
 
             string input = "";
             while((input = Console.ReadLine()).ToLower() != "end")
             {
-                SocietyMember societyMember = null;
-
                 string[] tokens = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                if(tokens.Length == 2)
+                string type = tokens[0].ToLower();
+                if (type == "citizen")
                 {
-                    string robotModel = tokens[0];
-                    string robotId = tokens[1];
+                    string citizenName = tokens[1];
+                    int citizenAge = int.Parse(tokens[2]);
+                    string citizenId = tokens[3];
+                    DateTime citizenBirthday = GetDate(tokens[4]);
 
-                    societyMember = new Robot(robotModel, robotId);
+                    list.Add(new Citizen(citizenName, citizenAge, citizenId, citizenBirthday));
                 }
-                else if(tokens.Length == 3)
+                else if(type == "pet")
                 {
-                    string citizenName = tokens[0];
-                    int citizenAge = int.Parse(tokens[1]);
-                    string citizenId = tokens[2];
+                    string petName = tokens[1];
+                    DateTime petBirthday = GetDate(tokens[2]);
 
-                    societyMember = new Citizen(citizenName, citizenAge, citizenId);
+                    list.Add(new Pet(petName, petBirthday));
                 }
-
-                societyMembers.Add(societyMember);
             }
-            string fakeIdPattern = Console.ReadLine();
 
-            foreach(SocietyMember member in societyMembers)
+            int yearToLookup = int.Parse(Console.ReadLine());
+            PrintOutput(list, yearToLookup);        
+        }
+        static void PrintOutput(IEnumerable<IBirthable> list, int yearToLookup)
+        {
+            foreach (IBirthable birthable in list
+                .Where(x => x.Birthdate.Year == yearToLookup))
             {
-                if (member.IsIdFake(fakeIdPattern))
-                {
-                    Console.WriteLine(member.Id);
-                }
+                Console.WriteLine($"{birthable.Birthdate.Day.ToString().PadLeft(2, '0')}" +
+                    $"/{birthable.Birthdate.Month.ToString().PadLeft(2, '0')}" +
+                    $"/{birthable.Birthdate.Year.ToString().PadLeft(2, '0')}");
             }
+        }
+        static DateTime GetDate(string input)
+        {
+            string[] tokens = input.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            int day = int.Parse(tokens[0]);
+            int month = int.Parse(tokens[1]);
+            int year = int.Parse(tokens[2]);
+
+            return new DateTime(year, month, day);
         }
     }
 }

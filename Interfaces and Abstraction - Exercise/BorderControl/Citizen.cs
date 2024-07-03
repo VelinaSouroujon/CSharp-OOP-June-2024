@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 
 namespace BorderControl
 {
-    public class Citizen : SocietyMember
+    public class Citizen : IIdentifiable, IBirthable, IWithName
     {
-        public Citizen(string name, int age, string id)
-            : base(id)
+        public Citizen(string name, int age, string id, DateTime birthdate)
         {
             Name = name;
             Age = age;
+            Id = id;
+            Birthdate = birthdate;
         }
 
         public string Name { get; private set; }
         public int Age { get; private set; }
+        public string Id { get; private set; }
+        public DateTime Birthdate { get; private set; }
     }
 }
