@@ -6,18 +6,16 @@ using System.Threading.Tasks;
 
 namespace CollectionHierarchy
 {
-    public class AddCollection : Collection
+    public class AddCollection : IAdd
     {
         private List<string> items;
 
         public AddCollection()
         {
             items = new List<string>();
-            Items = items.AsReadOnly();
         }
-        public override IReadOnlyCollection<string> Items { get; }
 
-        public override int Add(string item)
+        public int Add(string item)
         {
             items.Add(item);
             return items.Count - 1;

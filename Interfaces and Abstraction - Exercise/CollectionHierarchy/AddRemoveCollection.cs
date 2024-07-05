@@ -6,33 +6,24 @@ using System.Threading.Tasks;
 
 namespace CollectionHierarchy
 {
-    public class AddRemoveCollection : Collection, IRemoveable
+    public class AddRemoveCollection : IAdd,  IRemoveable
     {
-        private List<string> items;
+        private Queue<string> items;
 
         public AddRemoveCollection()
         {
-            items = new List<string>();
-            Items = items.AsReadOnly();
+            items = new Queue<string>();
         }
-        public override IReadOnlyCollection<string> Items { get; }
 
-        public override int Add(string item)
+        public int Add(string item)
         {
-            int idxToInsert = 0;
-
-            items.Insert(idxToInsert, item);
-            return idxToInsert;
+            items.Enqueue(item);
+            return 0;
         }
 
         public string Remove()
         {
-            int idxToRemove = items.Count - 1;
-
-            string removedElement = items[idxToRemove];
-            items.RemoveAt(idxToRemove);
-
-            return removedElement;
+            return items.Dequeue();
         }
     }
 }
