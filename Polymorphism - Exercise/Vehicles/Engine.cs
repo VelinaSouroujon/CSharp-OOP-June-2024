@@ -10,83 +10,107 @@ namespace Vehicles
     {
         private IReader reader;
         private IWriter writer;
+        private Dictionary<string, IVehicle> vehicles;
 
         public Engine(IReader reader, IWriter writer)
         {
             this.reader = reader;
             this.writer = writer;
+
+            vehicles = new Dictionary<string, IVehicle>(StringComparer.InvariantCultureIgnoreCase);
         }
 
         public void Run()
         {
-            IVehicle car = GetVehicle();
-            IVehicle truck = GetVehicle();
-            ReadCommands(car, truck);
+            ReadVehicles();
+            ReadCommands();
 
-            writer.WriteLine($"Car: {car.FuelQuantity.ToString("f2")}");
-            writer.WriteLine($"Truck: {truck.FuelQuantity.ToString("f2")}");
+            foreach (var (vehicleType, vehicle) in vehicles)
+            {
+                writer.WriteLine($"{vehicleType}: {vehicle.FuelQuantity.ToString("f2")}");
+            }
         }
-        private IVehicle GetVehicle()
+        private void ReadVehicles()
         {
-            string[] vehicleInfo = reader.ReadLine()
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            string type = vehicleInfo[0].ToLower();
-            double fuelQuantity = double.Parse(vehicleInfo[1]);
-            double fuelConsumptionPerKm = double.Parse(vehicleInfo[2]);
-
-            if(type == "car")
+            for (int i = 0; i < 3; i++)
             {
-                return new Car(fuelQuantity, fuelConsumptionPerKm);
-            }
-            if(type == "truck")
-            {
-                return new Truck(fuelQuantity, fuelConsumptionPerKm);
-            }
+                string[] vehicleInfo = reader.ReadLine()
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            throw new ArgumentException();
+                string type = vehicleInfo[0];
+                double fuelQuantity = double.Parse(vehicleInfo[1]);
+                double fuelConsumptionPerKm = double.Parse(vehicleInfo[2]);
+                double tankCapacity = double.Parse(vehicleInfo[3]);
+
+                switch (type.ToLower())
+                {
+                    case "car":
+                        vehicles.Add(type, new Car(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
+                        break;
+
+                    case "truck":
+                        vehicles.Add(type, new Truck(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
+                        break;
+
+                    case "bus":
+                        vehicles.Add(type, new Bus(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
+                        break;
+
+                    default:
+                        throw new ArgumentException();
+                }
+            }
         }
-        private void ReadCommands(IVehicle car, IVehicle truck)
+        private void ReadCommands()
         {
             int n = int.Parse(reader.ReadLine());
 
             for (int i = 0; i < n; i++)
             {
-                string[] cmdArgs = reader.ReadLine()
-                    .ToLower()
-                    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                string command = cmdArgs[0];
-                string vehicleType = cmdArgs[1];
-
-                switch(command)
+                try
                 {
-                    case "drive":
-                        double distance = double.Parse(cmdArgs[2]);
-                        if (vehicleType == "car")
-                        {
-                            VehicleDrive(car, distance);
-                        }
-                        else if(vehicleType == "truck")
-                        {
-                            VehicleDrive(truck, distance);
-                        }
-                        break;
+                    string[] cmdArgs = reader.ReadLine()
+                        .ToLower()
+                        .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                    case "refuel":
-                        double liters = double.Parse(cmdArgs[2]);
-                        if(vehicleType == "car")
-                        {
-                            car.Refuel(liters);
-                        }
-                        else if (vehicleType == "truck")
-                        {
-                            truck.Refuel(liters);
-                        }
-                        break;
+                    string command = cmdArgs[0];
+                    string vehicleType = cmdArgs[1];
 
-                    default:
-                        throw new InvalidOperationException();
+                    switch (command)
+                    {
+                        case "drive":
+                        case "driveempty":
+                            double distance = double.Parse(cmdArgs[2]);
+
+                            if (command == "driveempty")
+                            {
+                                Bus bus = vehicles[vehicleType] as Bus;
+                                if (bus != null)
+                                {
+                                    bus.IsEmpty = true;
+                                }
+                            }
+
+                            VehicleDrive(vehicles[vehicleType], distance);
+                            break;
+
+                        case "refuel":
+                            double liters = double.Parse(cmdArgs[2]);
+
+                            if (!vehicles[vehicleType].Refuel(liters))
+                            {
+                                writer.WriteLine($"Cannot fit {liters} fuel in the tank");
+                            }
+
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    writer.WriteLine(ex.Message);
                 }
             }
         }

@@ -9,8 +9,8 @@ namespace Vehicles
     public class Car : Vehicle
     {
         private double FuelConsumptionIncrease = 0.9;
-        public Car(double fuelQuantity, double fuelConsumption)
-            : base(fuelQuantity, fuelConsumption)
+        public Car(double fuelQuantity, double fuelConsumption, double tankCapacity)
+            : base(fuelQuantity, fuelConsumption, tankCapacity)
         {
 
         }
@@ -18,11 +18,6 @@ namespace Vehicles
         {
             get => base.FuelConsumption + FuelConsumptionIncrease;
             protected set => base.FuelConsumption = value;
-        }
-
-        public override void Refuel(double liters)
-        {
-            FuelQuantity += liters;
         }
     }
 }

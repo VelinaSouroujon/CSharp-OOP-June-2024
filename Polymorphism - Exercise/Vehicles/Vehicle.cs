@@ -8,15 +8,19 @@ namespace Vehicles
 {
     public abstract class Vehicle : IVehicle
     {
-        protected Vehicle(double fuelQuantity, double fuelConsumption)
+        private const string InvalidRefuelArgument = "Fuel must be a positive number";
+        protected Vehicle(double fuelQuantity, double fuelConsumption, double tankCapacity)
         {
-            FuelQuantity = fuelQuantity;
             FuelConsumption = fuelConsumption;
+            TankCapacity = tankCapacity;
+            FuelQuantity = InitializeFuelQuantity(fuelQuantity);
         }
 
         public double FuelQuantity { get; protected set; }
 
         public virtual double FuelConsumption { get; protected set; }
+
+        public double TankCapacity { get; protected set; }
 
         public bool Drive(double distance)
         {
@@ -31,6 +35,31 @@ namespace Vehicles
             return true;
         }
 
-        public abstract void Refuel(double liters);
+        public virtual bool Refuel(double liters)
+        {
+            if (liters <= 0)
+            {
+                throw new ArgumentException(InvalidRefuelArgument);
+            }
+
+            double fuelAfterRefuel = FuelQuantity + liters;
+
+            if (TankCapacity >= fuelAfterRefuel)
+            {
+                FuelQuantity = fuelAfterRefuel;
+                return true;
+            }
+
+            return false;
+        }
+        private double InitializeFuelQuantity(double fuelQuantity)
+        {
+            if (fuelQuantity > TankCapacity)
+            {
+                return 0;
+            }
+
+            return fuelQuantity;
+        }
     }
 }
