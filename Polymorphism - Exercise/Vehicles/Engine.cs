@@ -76,6 +76,8 @@ namespace Vehicles
                     string command = cmdArgs[0];
                     string vehicleType = cmdArgs[1];
 
+                    IVehicle vehicle = vehicles[vehicleType];
+
                     switch (command)
                     {
                         case "drive":
@@ -84,20 +86,20 @@ namespace Vehicles
 
                             if (command == "driveempty")
                             {
-                                Bus bus = vehicles[vehicleType] as Bus;
+                                Bus bus = vehicle as Bus;
                                 if (bus != null)
                                 {
                                     bus.IsEmpty = true;
                                 }
                             }
 
-                            VehicleDrive(vehicles[vehicleType], distance);
+                            VehicleDrive(vehicle, distance);
                             break;
 
                         case "refuel":
                             double liters = double.Parse(cmdArgs[2]);
 
-                            if (!vehicles[vehicleType].Refuel(liters))
+                            if (!vehicle.Refuel(liters))
                             {
                                 writer.WriteLine($"Cannot fit {liters} fuel in the tank");
                             }
