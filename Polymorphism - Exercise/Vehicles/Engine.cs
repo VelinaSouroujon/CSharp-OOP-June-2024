@@ -10,14 +10,14 @@ namespace Vehicles
     {
         private IReader reader;
         private IWriter writer;
-        private Dictionary<string, IVehicle> vehicles;
+        private Dictionary<string, IVehicle> vehiclesByType;
 
         public Engine(IReader reader, IWriter writer)
         {
             this.reader = reader;
             this.writer = writer;
 
-            vehicles = new Dictionary<string, IVehicle>(StringComparer.InvariantCultureIgnoreCase);
+            vehiclesByType = new Dictionary<string, IVehicle>(StringComparer.InvariantCultureIgnoreCase);
         }
 
         public void Run()
@@ -25,7 +25,7 @@ namespace Vehicles
             ReadVehicles();
             ReadCommands();
 
-            foreach (var (vehicleType, vehicle) in vehicles)
+            foreach (var (vehicleType, vehicle) in vehiclesByType)
             {
                 writer.WriteLine($"{vehicleType}: {vehicle.FuelQuantity.ToString("f2")}");
             }
@@ -45,15 +45,15 @@ namespace Vehicles
                 switch (type.ToLower())
                 {
                     case "car":
-                        vehicles.Add(type, new Car(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
+                        vehiclesByType.Add(type, new Car(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
                         break;
 
                     case "truck":
-                        vehicles.Add(type, new Truck(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
+                        vehiclesByType.Add(type, new Truck(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
                         break;
 
                     case "bus":
-                        vehicles.Add(type, new Bus(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
+                        vehiclesByType.Add(type, new Bus(fuelQuantity, fuelConsumptionPerKm, tankCapacity));
                         break;
 
                     default:
@@ -76,7 +76,7 @@ namespace Vehicles
                     string command = cmdArgs[0];
                     string vehicleType = cmdArgs[1];
 
-                    IVehicle vehicle = vehicles[vehicleType];
+                    IVehicle vehicle = vehiclesByType[vehicleType];
 
                     switch (command)
                     {
