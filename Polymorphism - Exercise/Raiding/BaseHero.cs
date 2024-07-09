@@ -14,8 +14,16 @@ namespace Raiding
             Power = power;
         }
 
-        public string Name { get; protected set; }
-        public int Power { get; protected set; }
+        public string Name { get; private set; }
+        public int Power { get; private set; }
+        protected string HittingCastAbility()
+        {
+            return $"{GetType().Name} - {Name} hit for {Power} damage";
+        }
+        protected string HealingCastAbility()
+        {
+            return $"{GetType().Name} - {Name} healed for {Power}";
+        }
         public abstract string CastAbility();
     }
 }
