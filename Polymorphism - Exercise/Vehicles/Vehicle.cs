@@ -16,11 +16,11 @@ namespace Vehicles
             FuelQuantity = InitializeFuelQuantity(fuelQuantity);
         }
 
-        public double FuelQuantity { get; protected set; }
+        public double FuelQuantity { get; private set; }
 
-        public virtual double FuelConsumption { get; protected set; }
+        public virtual double FuelConsumption { get; private set; }
 
-        public double TankCapacity { get; protected set; }
+        public double TankCapacity { get; private set; }
 
         public bool Drive(double distance)
         {
