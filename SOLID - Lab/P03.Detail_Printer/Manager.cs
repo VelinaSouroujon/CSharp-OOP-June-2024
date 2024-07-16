@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace P03.DetailPrinter
 {
@@ -10,5 +12,14 @@ namespace P03.DetailPrinter
         }
 
         public IReadOnlyCollection<string> Documents { get; set; }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(base.ToString());
+            sb.AppendLine(string.Join(Environment.NewLine, Documents));
+
+            return sb.ToString().TrimEnd();
+        }
     }
 }
