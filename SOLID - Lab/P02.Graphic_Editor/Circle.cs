@@ -2,5 +2,9 @@
 {
     public class Circle : IShape
     {
+        public string GetShape()
+        {
+            return "I'm Circle";
+        }
     }
 }

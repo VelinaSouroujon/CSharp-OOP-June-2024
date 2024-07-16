@@ -2,6 +2,9 @@
 {
     public class Rectangle : IShape
     {
-
+        public string GetShape()
+        {
+            return "I'm Recangle";
+        }
     }
 }
