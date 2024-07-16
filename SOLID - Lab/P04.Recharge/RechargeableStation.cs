@@ -3,7 +3,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace P04.Recharge
 {
-    public class RechargeableStation : IStation, IRechargeable
+    public class RechargeableStation : IStation
     {
         private int _capacity;
         private int _current;
@@ -31,11 +31,6 @@ namespace P04.Recharge
         public void Dismount()
         {
             _current--;
-        }
-
-        public void Recharge()
-        {
-            throw new InvalidOperationException("Recharge Station cannot recharge itself!");
         }
     }
 }
