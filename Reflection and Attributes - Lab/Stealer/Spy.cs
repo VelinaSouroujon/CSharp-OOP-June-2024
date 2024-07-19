@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Stealer
 {
@@ -80,6 +82,33 @@ namespace Stealer
             foreach(MethodInfo method in nonPublicMethods)
             {
                 result.AppendLine(method.Name);
+            }
+
+            return result.ToString().TrimEnd();
+        }
+        public string CollectGettersAndSetters(string className)
+        {
+            StringBuilder result = new StringBuilder();
+
+            Type type = GetTypeByName(className);
+
+            PropertyInfo[] properties = type.GetProperties(
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+
+            foreach (PropertyInfo property in properties)
+            {
+                MethodInfo? getter = property.GetGetMethod(true);
+                MethodInfo? setter = property.GetSetMethod(true);
+
+                if (getter is not null)
+                {
+                    result.AppendLine($"{getter.Name} will return {getter.ReturnType.FullName}");
+                }
+
+                if (setter is not null)
+                {
+                    result.AppendLine($"{setter.Name} will set field of {setter.GetParameters()[0].ParameterType}");
+                }
             }
 
             return result.ToString().TrimEnd();
