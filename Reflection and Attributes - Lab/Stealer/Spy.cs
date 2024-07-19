@@ -13,11 +13,8 @@ namespace Stealer
         {
             StringBuilder result = new StringBuilder();
 
-            Type? type = Type.GetType(className);
-            if(type is null )
-            {
-                throw new InvalidOperationException("Type not found");
-            }
+            Type type = GetTypeByName(className);
+
             result.AppendLine($"Class under investigation: {type.FullName}");
 
             object? instance = Activator.CreateInstance(type);
@@ -44,11 +41,7 @@ namespace Stealer
         {
             StringBuilder result = new StringBuilder();
 
-            Type? type = Type.GetType(className);
-            if (type is null)
-            {
-                throw new InvalidOperationException("Type not found");
-            }
+            Type type = GetTypeByName(className);
 
             FieldInfo[] publicFields = type.GetFields();
             PropertyInfo[] properties = type.GetProperties(
@@ -74,6 +67,32 @@ namespace Stealer
             }
 
             return result.ToString().TrimEnd();
+        }
+        public string RevealPrivateMethods(string className)
+        {
+            StringBuilder result = new StringBuilder();
+
+            Type type = GetTypeByName(className);
+            result.AppendLine($"All Private Methods of Class: {type.FullName}");
+            result.AppendLine($"Base Class: {type.BaseType?.Name}");
+
+            MethodInfo[] nonPublicMethods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            foreach(MethodInfo method in nonPublicMethods)
+            {
+                result.AppendLine(method.Name);
+            }
+
+            return result.ToString().TrimEnd();
+        }
+        private Type GetTypeByName(string name)
+        {
+            Type? type = Type.GetType(name);
+            if (type is null)
+            {
+                throw new InvalidOperationException("Type not found");
+            }
+
+            return type;
         }
     }
 }
