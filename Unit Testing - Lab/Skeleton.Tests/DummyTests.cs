@@ -30,18 +30,25 @@ namespace Skeleton.Tests
 
             Assert.Throws<InvalidOperationException>(() => dummy.GiveExperience());
         }
-        [TestCase(0)]
         [TestCase(1)]
-        [TestCase(-120)]
-        [TestCase(56)]
+        [TestCase(2)]
+        [TestCase(25)]
         [TestCase(999)]
-        public void IsDead(int health)
+        public void IsDead_HealthPositive_ShoultReturnFalse(int health)
         {
             Dummy dummy = new Dummy(health, InitialExperience);
 
-            bool expectedResult = health <= 0;
+            Assert.AreEqual(false, dummy.IsDead());
+        }
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-6)]
+        [TestCase(-34)]
+        public void IsDead_HealthNegativeOrZero_ShouldReturnTrue(int health)
+        {
+            Dummy dummy = new Dummy(health, InitialExperience);
 
-            Assert.AreEqual(expectedResult, dummy.IsDead());
+            Assert.AreEqual(true, dummy.IsDead());
         }
         [TestCase(0, 0)]
         [TestCase(-1, 9)]
