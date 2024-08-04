@@ -50,16 +50,8 @@ namespace SocialMediaManager.Tests
                 string expectedStr = $"Successfully added influencer {influencer.Username} with {influencer.Followers}";
 
                 Assert.AreEqual(expectedStr, returnStr);
+                CollectionAssert.AreEqual(expectedInfluencers, repository.Influencers);
             }
-            CollectionAssert.AreEqual(expectedInfluencers, repository.Influencers);
-
-            //Assert.AreEqual(expectedInfluencers.Count, repository.Influencers.Count);
-
-            //int counter = 0;
-            //foreach(Influencer influencer in repository.Influencers)
-            //{
-            //    Assert.AreEqual(expectedInfluencers[counter++], influencer);
-            //}
         }
         [TestCase(null)]
         [TestCase("")]
@@ -108,10 +100,10 @@ namespace SocialMediaManager.Tests
 
                 expectedInfluencers.Add(influencer);
                 repository.RegisterInfluencer(influencer);
-            }
 
-            Assert.AreEqual
+                Assert.AreEqual
                 (expectedInfluencers.MaxBy(x => x.Followers), repository.GetInfluencerWithMostFollowers());
+            }
         }
         [Test]
         public void GetInfluencer_WorksCorrectly()
